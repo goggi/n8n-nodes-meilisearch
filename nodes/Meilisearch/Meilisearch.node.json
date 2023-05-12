@@ -1,0 +1,18 @@
+{
+	"node": "n8n-nodes-meilisearch",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Data & Storage", "Marketing & Content"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://docs.meilisearch.com/reference/api/overview.html"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://docs.meilisearch.com/reference/api/overview.html"
+			}
+		]
+	}
+}
