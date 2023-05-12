@@ -28,9 +28,178 @@ export const tasksOperations: INodeProperties[] = [
 					},
 				},
 			},
+			{
+				name: 'Delete Tasks',
+				value: 'deleteTasks',
+				action: 'Delete tasks',
+				routing: {
+					request: {
+						method: 'DELETE',
+						url: '/tasks',
+						qs: {}
+					},
+				},
+			},
 		],
 	},
 ];
+
+const commonOptions: INodeProperties[] = [
+	{
+		displayName: 'UIDs',
+		name: 'uids',
+		description: 'Comma delimited list of UID(s) to filter results by',
+		type: 'string',
+		default: '',
+		routing: {
+			request: {
+				qs: {
+					uids: '={{$value.replaceAll(" ", "")}}',
+				},
+			},
+		},
+	},
+	{
+		displayName: 'Index UIDs',
+		name: 'indexUids',
+		description: 'Comma delimited list of Index UID(s) to filter results by',
+		type: 'string',
+		default: '',
+		routing: {
+			request: {
+				qs: {
+					indexUids: '={{$value.replaceAll(" ", "")}}',
+				},
+			},
+		},
+	},
+	{
+		displayName: 'Statuses',
+		name: 'statuses',
+		description: 'Comma delimited list of Task Status(es) to filter results by',
+		type: 'string',
+		default: '',
+		routing: {
+			request: {
+				qs: {
+					statuses: '={{$value.replaceAll(" ", "")}}',
+				},
+			},
+		},
+	},
+	{
+		displayName: 'Types',
+		name: 'types',
+		description: 'Comma delimited list of Task Type(s) to filter results by',
+		type: 'string',
+		default: '',
+		routing: {
+			request: {
+				qs: {
+					types: '={{$value.replaceAll(" ", "")}}',
+				},
+			},
+		},
+	},
+	{
+		displayName: 'Canceled By',
+		name: 'canceledBy',
+		description: 'Comma delimited list of Task UID(s) that canceled another task(s)',
+		type: 'string',
+		default: '',
+		routing: {
+			request: {
+				qs: {
+					canceledBy: '={{$value.replaceAll(" ", "")}}',
+				},
+			},
+		},
+	},
+	{
+		displayName: 'Before Enqueued At',
+		name: 'beforeEnqueuedAt',
+		description: 'Permits to filter tasks based on their enqueuedAt time',
+		type: 'dateTime',
+		default: '',
+		routing: {
+			request: {
+				qs: {
+					beforeEnqueuedAt: '={{new Date($value).toJSON()}}',
+				},
+			},
+		},
+	},
+	{
+		displayName: 'After Enqueued At',
+		name: 'afterEnqueuedAt',
+		description: 'Permits to filter tasks based on their enqueuedAt time',
+		type: 'dateTime',
+		default: '',
+		routing: {
+			request: {
+				qs: {
+					afterEnqueuedAt: '={{new Date($value).toJSON()}}',
+				},
+			},
+		},
+	},
+	{
+		displayName: 'Before Started At',
+		name: 'beforeStartedAt',
+		description: 'Permits to filter tasks based on their startedAt time',
+		type: 'dateTime',
+		default: '',
+		routing: {
+			request: {
+				qs: {
+					beforeStartedAt: '={{new Date($value).toJSON()}}',
+				},
+			},
+		},
+	},
+	{
+		displayName: 'After Started At',
+		name: 'afterStartedAt',
+		description: 'Permits to filter tasks based on their startedAt time',
+		type: 'dateTime',
+		default: '',
+		routing: {
+			request: {
+				qs: {
+					afterStartedAt: '={{new Date($value).toJSON()}}',
+				},
+			},
+		},
+	},
+	{
+		displayName: 'Before Finished At',
+		name: 'beforeFinishedAt',
+		description: 'Permits to filter tasks based on their finishedAt time',
+		type: 'dateTime',
+		default: '',
+		routing: {
+			request: {
+				qs: {
+					beforeFinishedAt: '={{new Date($value).toJSON()}}',
+				},
+			},
+		},
+	},
+	{
+		displayName: 'After Finished At',
+		name: 'afterFinishedAt',
+		description: 'Permits to filter tasks based on their finishedAt time',
+		type: 'dateTime',
+		default: '',
+		routing: {
+			request: {
+				qs: {
+					afterFinishedAt: '={{new Date($value).toJSON()}}',
+				},
+			},
+		},
+	},
+]
 
 export const getAllTasksFields: INodeProperties[] = [
 	{
@@ -82,160 +251,28 @@ export const getAllTasksFields: INodeProperties[] = [
 					},
 				},
 			},
-			{
-				displayName: 'UIDs',
-				name: 'uids',
-				description: 'Comma delimited list of UID(s) to filter results by',
-				type: 'string',
-				default: '',
-				routing: {
-					request: {
-						qs: {
-							uids: '={{$value.replaceAll(" ", "")}}',
-						},
-					},
-				},
+			...commonOptions,
+		],
+	},
+];
+
+export const deleteTasksFields: INodeProperties[] = [
+	{
+		displayName: 'Additional Fields',
+		noDataExpression: true,
+		name: 'additionalFields',
+		placeholder: 'Add Field',
+		description: 'Additional fields to add',
+		type: 'collection',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['tasks'],
+				operation: ['deleteTasks'],
 			},
-			{
-				displayName: 'Index UIDs',
-				name: 'indexUids',
-				description: 'Comma delimited list of Index UID(s) to filter results by',
-				type: 'string',
-				default: '',
-				routing: {
-					request: {
-						qs: {
-							indexUids: '={{$value.replaceAll(" ", "")}}',
-						},
-					},
-				},
-			},
-			{
-				displayName: 'Statuses',
-				name: 'statuses',
-				description: 'Comma delimited list of Task Status(es) to filter results by',
-				type: 'string',
-				default: '',
-				routing: {
-					request: {
-						qs: {
-							statuses: '={{$value.replaceAll(" ", "")}}',
-						},
-					},
-				},
-			},
-			{
-				displayName: 'Types',
-				name: 'types',
-				description: 'Comma delimited list of Task Type(s) to filter results by',
-				type: 'string',
-				default: '',
-				routing: {
-					request: {
-						qs: {
-							types: '={{$value.replaceAll(" ", "")}}',
-						},
-					},
-				},
-			},
-			{
-				displayName: 'Canceled By',
-				name: 'canceledBy',
-				description: 'Comma delimited list of Task UID(s) that canceled another task(s)',
-				type: 'string',
-				default: '',
-				routing: {
-					request: {
-						qs: {
-							canceledBy: '={{$value.replaceAll(" ", "")}}',
-						},
-					},
-				},
-			},
-			{
-				displayName: 'Before Enqueued At',
-				name: 'beforeEnqueuedAt',
-				description: 'Permits to filter tasks based on their enqueuedAt time',
-				type: 'dateTime',
-				default: '',
-				routing: {
-					request: {
-						qs: {
-							beforeEnqueuedAt: '={{new Date($value).toJSON()}}',
-						},
-					},
-				},
-			},
-			{
-				displayName: 'After Enqueued At',
-				name: 'afterEnqueuedAt',
-				description: 'Permits to filter tasks based on their enqueuedAt time',
-				type: 'dateTime',
-				default: '',
-				routing: {
-					request: {
-						qs: {
-							afterEnqueuedAt: '={{new Date($value).toJSON()}}',
-						},
-					},
-				},
-			},
-			{
-				displayName: 'Before Started At',
-				name: 'beforeStartedAt',
-				description: 'Permits to filter tasks based on their startedAt time',
-				type: 'dateTime',
-				default: '',
-				routing: {
-					request: {
-						qs: {
-							beforeStartedAt: '={{new Date($value).toJSON()}}',
-						},
-					},
-				},
-			},
-			{
-				displayName: 'After Started At',
-				name: 'afterStartedAt',
-				description: 'Permits to filter tasks based on their startedAt time',
-				type: 'dateTime',
-				default: '',
-				routing: {
-					request: {
-						qs: {
-							afterStartedAt: '={{new Date($value).toJSON()}}',
-						},
-					},
-				},
-			},
-			{
-				displayName: 'Before Finished At',
-				name: 'beforeFinishedAt',
-				description: 'Permits to filter tasks based on their finishedAt time',
-				type: 'dateTime',
-				default: '',
-				routing: {
-					request: {
-						qs: {
-							beforeFinishedAt: '={{new Date($value).toJSON()}}',
-						},
-					},
-				},
-			},
-			{
-				displayName: 'After Finished At',
-				name: 'afterFinishedAt',
-				description: 'Permits to filter tasks based on their finishedAt time',
-				type: 'dateTime',
-				default: '',
-				routing: {
-					request: {
-						qs: {
-							afterFinishedAt: '={{new Date($value).toJSON()}}',
-						},
-					},
-				},
-			},
+		},
+		options: [
+			...commonOptions,
 		],
 	},
 ];
