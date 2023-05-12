@@ -1,6 +1,7 @@
 /* eslint-disable n8n-nodes-base/node-param-resource-with-plural-option */
 import type { INodeType, INodeTypeDescription } from 'n8n-workflow';
 import { generalOperations } from './GeneralDescription';
+import { tasksOperations, getAllTasksFields } from './TasksDescription';
 
 export class Meilisearch implements INodeType {
 	description: INodeTypeDescription = {
@@ -39,6 +40,10 @@ export class Meilisearch implements INodeType {
 						name: 'General',
 						value: 'general',
 					},
+					{
+						name: 'Tasks',
+						value: 'tasks',
+					},
 				],
 				default: 'general',
 				//TODO
@@ -48,7 +53,9 @@ export class Meilisearch implements INodeType {
 				//keys
 				//indexes
 			},
-			...generalOperations
+			...generalOperations,
+			...tasksOperations,
+			...getAllTasksFields
 		],
 	};
 }
