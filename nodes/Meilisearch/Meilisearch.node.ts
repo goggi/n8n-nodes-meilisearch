@@ -2,7 +2,7 @@
 import type { INodeType, INodeTypeDescription } from 'n8n-workflow';
 import { generalOperations } from './GeneralDescription';
 import { tasksOperations, getAllTasksFields, deleteTasksFields, cancelTasksFields, getTaskFields } from './TasksDescription';
-import { indexesOperations, swapIndexesFields } from './IndexesDescription';
+import { indexesFields, indexesOperations, swapIndexesFields } from './IndexesDescription';
 
 export class Meilisearch implements INodeType {
 	description: INodeTypeDescription = {
@@ -52,7 +52,6 @@ export class Meilisearch implements INodeType {
 				],
 				default: 'general',
 				//TODO
-				//swap-indexes
 				//multi-search
 				//keys
 				//indexes
@@ -64,7 +63,8 @@ export class Meilisearch implements INodeType {
 			...cancelTasksFields,
 			...getTaskFields,
 			...indexesOperations,
-			...swapIndexesFields
+			...swapIndexesFields,
+			...indexesFields
 		],
 	};
 }

@@ -13,8 +13,20 @@ export const indexesOperations: INodeProperties[] = [
 				resource: ['indexes'],
 			},
 		},
-		default: 'swapIndexes',
+		default: 'listIndexes',
 		options: [
+			{
+				name: 'List Indexes',
+				value: 'listIndexes',
+				action: 'List indexes',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/indexes',
+						qs: {}
+					},
+				},
+			},
 			{
 				name: 'Swap Indexes',
 				value: 'swapIndexes',
@@ -41,6 +53,60 @@ export const indexesOperations: INodeProperties[] = [
 		],
 	},
 ];
+
+export const indexesFields: INodeProperties[] = [
+	{
+		displayName: 'Additional Fields',
+		noDataExpression: true,
+		name: 'additionalFields',
+		placeholder: 'Add Field',
+		description: 'Additional fields to add',
+		type: 'collection',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['indexes'],
+				operation: ['listIndexes'],
+			},
+		},
+		options: [
+			{
+				displayName: 'Limit',
+				name: 'limit',
+				description: 'Max number of results to return',
+				type: 'number',
+				typeOptions: {
+					minValue: 1,
+				},
+				default: 50,
+				routing: {
+					request: {
+						qs: {
+							limit: '={{$value}}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Offset',
+				name: 'offset',
+				description: 'Number of indexes to skip',
+				type: 'number',
+				typeOptions: {
+					minValue: 1,
+				},
+				default: 1,
+				routing: {
+					request: {
+						qs: {
+							offset: '={{$value}}',
+						},
+					},
+				},
+			},
+		],
+	},
+]
 
 export const swapIndexesFields: INodeProperties[] = [
 	{
