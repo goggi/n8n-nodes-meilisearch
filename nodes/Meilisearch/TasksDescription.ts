@@ -16,6 +16,18 @@ export const tasksOperations: INodeProperties[] = [
 		default: 'getAllTasks',
 		options: [
 			{
+				name: 'Get A Single Task',
+				value: 'getTask',
+				action: 'Get one task by UID',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{"/tasks/" + $parameter["uid"]}}',
+						qs: {}
+					},
+				},
+			},
+			{
 				name: 'Get All Tasks',
 				value: 'getAllTasks',
 				action: 'Get all tasks',
@@ -32,10 +44,24 @@ export const tasksOperations: INodeProperties[] = [
 				name: 'Delete Tasks',
 				value: 'deleteTasks',
 				action: 'Delete tasks',
+				description: 'Delete a finished (succeeded, failed, or canceled) task based on uid, status, type, indexUid, canceledBy, or date. Task deletion is an atomic transaction: either all tasks are successfully deleted, or none are.',
 				routing: {
 					request: {
 						method: 'DELETE',
 						url: '/tasks',
+						qs: {}
+					},
+				},
+			},
+			{
+				name: 'Cancel Tasks',
+				value: 'cancelTasks',
+				action: 'Cancel tasks',
+				description: 'Cancel any number of enqueued or processing tasks based on their uid, status, type, indexUid, or the date at which they were enqueued, processed, or completed. Task cancelation is an atomic transaction: either all tasks are successfully canceled or none are.',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '/tasks/cancel',
 						qs: {}
 					},
 				},
@@ -201,6 +227,25 @@ const commonOptions: INodeProperties[] = [
 	},
 ]
 
+export const getTaskFields: INodeProperties[] = [
+	{
+		displayName: 'Task UID',
+		name: 'uid',
+		type: 'number',
+		required: true,
+		typeOptions: {
+			minValue: 1,
+		},
+		default: null,
+		displayOptions: {
+			show: {
+				resource: ['tasks'],
+				operation: ['getTask'],
+			},
+		},
+	},
+]
+
 export const getAllTasksFields: INodeProperties[] = [
 	{
 		displayName: 'Additional Fields',
@@ -269,6 +314,27 @@ export const deleteTasksFields: INodeProperties[] = [
 			show: {
 				resource: ['tasks'],
 				operation: ['deleteTasks'],
+			},
+		},
+		options: [
+			...commonOptions,
+		],
+	},
+];
+
+export const cancelTasksFields: INodeProperties[] = [
+	{
+		displayName: 'Additional Fields',
+		noDataExpression: true,
+		name: 'additionalFields',
+		placeholder: 'Add Field',
+		description: 'Additional fields to add',
+		type: 'collection',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['tasks'],
+				operation: ['cancelTasks'],
 			},
 		},
 		options: [
