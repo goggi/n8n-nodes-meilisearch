@@ -27,13 +27,25 @@ export const documentsOperations: INodeProperties[] = [
 					},
 				},
 			},
+			{
+				name: 'Get One Document',
+				value: 'getDocument',
+				action: 'Get one document by UID',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{"/indexes/" + $parameter["uid"] + "/documents/" + $parameter["documentId"]}}',
+						qs: {}
+					},
+				},
+			},
 		],
 	}
 ];
 
 export const documentsFields: INodeProperties[] = [
 	{
-		displayName: 'UID',
+		displayName: 'Index UID',
 		name: 'uid',
 		description: 'Name of the index',
 		type: 'string',
@@ -42,6 +54,41 @@ export const documentsFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['documents'],
+				operation: ['getDocument'],
+			},
+		},
+	},
+	{
+		displayName: 'Document ID',
+		name: 'documentId',
+		description: 'UId for the document',
+		type: 'string',
+		default: '',
+		required: true,
+		displayOptions: {
+			show: {
+				resource: ['documents'],
+				operation: ['getDocument'],
+			},
+		},
+	},
+	{
+		displayName: 'Fields',
+		name: 'fields',
+		type: 'string',
+		description: 'Comma-separated list of fields to display for an API resource. By default it contains all fields of an API resource.',
+		default: '*',
+		displayOptions: {
+			show: {
+				resource: ['documents'],
+				operation: ['getDocument'],
+			},
+		},
+		routing: {
+			request: {
+				qs: {
+					fields: '={{$value.replaceAll(" ", "")}}',
+				},
 			},
 		},
 	},
