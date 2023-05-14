@@ -16,6 +16,7 @@ import {
 	keysOperations,
 	updateKeyFields,
 } from './KeysDescription';
+import { documentsAdditionalFields, documentsFields, documentsOperations } from './DocumentsDescription';
 
 export class Meilisearch implements INodeType {
 	description: INodeTypeDescription = {
@@ -51,6 +52,10 @@ export class Meilisearch implements INodeType {
 				noDataExpression: true,
 				options: [
 					{
+						name: 'Documents',
+						value: 'documents',
+					},
+					{
 						name: 'General',
 						value: 'general',
 					},
@@ -74,6 +79,7 @@ export class Meilisearch implements INodeType {
 				default: 'general',
 				//TODO
 				//multi-search
+				//documents
 				//indexes settings and sub routes
 			},
 			...generalOperations,
@@ -95,6 +101,10 @@ export class Meilisearch implements INodeType {
 			...getKeyFields,
 			...updateKeyFields,
 			...createKeyFields,
+			// Documents
+			...documentsOperations,
+			...documentsFields,
+			...documentsAdditionalFields
 		],
 	};
 }
