@@ -39,6 +39,18 @@ export const keysOperations: INodeProperties[] = [
 					},
 				},
 			},
+			{
+				name: 'Delete An API Key',
+				value: 'deleteKey',
+				action: 'Delete a key by its uid or key',
+				routing: {
+					request: {
+						method: 'DELETE',
+						url: '={{"/keys/" + $parameter["uid"]}}',
+						qs: {}
+					},
+				},
+			}
 		],
 	},
 ];
@@ -55,7 +67,7 @@ export const getKeyFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['keys'],
-				operation: ['getKey'],
+				operation: ['getKey', 'deleteKey'],
 			}
 		}
 	}
