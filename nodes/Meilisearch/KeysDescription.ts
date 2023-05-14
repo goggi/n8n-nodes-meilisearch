@@ -70,8 +70,8 @@ export const keysOperations: INodeProperties[] = [
 			{
 				name: 'Get API Keys',
 				value: 'getKeys',
-				action:
-					'Returns the 20 most recently created keys in a results array expired keys are included in the response but deleted keys are not',
+				action: 'Get many api keys',
+				description: 'Returns the 20 most recently created keys in a results array expired keys are included in the response but deleted keys are not',
 				routing: {
 					request: {
 						method: 'GET',

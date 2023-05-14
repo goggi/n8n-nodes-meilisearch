@@ -71,7 +71,8 @@ export const indexesOperations: INodeProperties[] = [
 			{
 				name: 'Swap Indexes',
 				value: 'swapIndexes',
-				action: 'Swap the documents settings and task history of two or more indexes you can only swap indexes in pairs however a single request can swap as many index pairs as you wish swapping indexes is an atomic transaction either all indexes are successfully swapped or none are',
+				description: 'Swap the documents settings and task history of two or more indexes you can only swap indexes in pairs however a single request can swap as many index pairs as you wish swapping indexes is an atomic transaction either all indexes are successfully swapped or none are',
+				action: 'Swap indexes',
 				routing: {
 					request: {
 						method: 'POST',

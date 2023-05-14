@@ -16,6 +16,27 @@ export const documentsOperations: INodeProperties[] = [
 		default: 'getMany',
 		options: [
 			{
+				name: 'Add or Replace Documents',
+				value: 'addOrReplaceDocuments',
+				action: 'Add or replace documents',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '={{"/indexes/" + $parameter["uid"] + "/documents"}}',
+						qs: {},
+						body: {},
+					},
+					send: {
+						preSend: [
+							async function (this, requestOptions) {
+								console.log(requestOptions)
+								return requestOptions
+							}
+						],
+					},
+				},
+			},
+			{
 				name: 'Get Documents',
 				value: 'getMany',
 				action: 'Get documents',
@@ -39,6 +60,18 @@ export const documentsOperations: INodeProperties[] = [
 					},
 				},
 			},
+			{
+				name: 'Delete One Document',
+				value: 'deleteDocument',
+				action: 'Delete one document by UID',
+				routing: {
+					request: {
+						method: 'DELETE',
+						url: '={{"/indexes/" + $parameter["uid"] + "/documents/" + $parameter["documentId"]}}',
+						qs: {}
+					},
+				},
+			},
 		],
 	}
 ];
@@ -54,7 +87,6 @@ export const documentsFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['documents'],
-				operation: ['getDocument'],
 			},
 		},
 	},
@@ -68,7 +100,30 @@ export const documentsFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['documents'],
-				operation: ['getDocument'],
+				operation: ['getDocument', 'deleteDocument'],
+			},
+		},
+	},
+	{
+		displayName: 'Documents JSON',
+		name: 'documentsJson',
+		description: 'JSON objects to add or replace. This passes a string.',
+		hint: '{id: 1, fieldName: "fieldValue"}, {id: 2, fieldName: "fieldValue"}',
+		type: 'string',
+		default: '',
+		required: true,
+		typeOptions: {
+			rows: 4,
+		},
+		displayOptions: {
+			show: {
+				resource: ['documents'],
+				operation: ['addOrReplaceDocuments'],
+			},
+		},
+		routing: {
+			request: {
+				body: ['={{JSON.parse($value)}}'],
 			},
 		},
 	},
