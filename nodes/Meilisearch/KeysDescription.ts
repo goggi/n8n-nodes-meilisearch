@@ -27,8 +27,38 @@ export const keysOperations: INodeProperties[] = [
 					},
 				},
 			},
+			{
+				name: 'Get An API Key',
+				value: 'getKey',
+				action: 'Get a single key by its uid or key',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{"/keys/" + $parameter["uid"]}}',
+						qs: {}
+					},
+				},
+			},
 		],
 	},
+];
+
+export const getKeyFields: INodeProperties[] = [
+	{
+		displayName: 'UID',
+		name: 'uid',
+		placeholder: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+		description: 'UID or Key of the key',
+		required: true,
+		type: 'string',
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['keys'],
+				operation: ['getKey'],
+			}
+		}
+	}
 ];
 
 export const getKeysFields: INodeProperties[] = [
