@@ -3,6 +3,7 @@ import type { INodeType, INodeTypeDescription } from 'n8n-workflow';
 import { generalOperations } from './GeneralDescription';
 import { tasksOperations, getAllTasksFields, deleteTasksFields, cancelTasksFields, getTaskFields } from './TasksDescription';
 import { indexesFields, indexesOperations, swapIndexesFields } from './IndexesDescription';
+import { getKeysFields, keysOperations } from './KeysDescription';
 
 export class Meilisearch implements INodeType {
 	description: INodeTypeDescription = {
@@ -49,6 +50,10 @@ export class Meilisearch implements INodeType {
 						name: 'Indexes',
 						value: 'indexes',
 					},
+					{
+						name: 'Keys',
+						value: 'keys',
+					},
 				],
 				default: 'general',
 				//TODO
@@ -64,7 +69,9 @@ export class Meilisearch implements INodeType {
 			...getTaskFields,
 			...indexesOperations,
 			...swapIndexesFields,
-			...indexesFields
+			...indexesFields,
+			...keysOperations,
+			...getKeysFields
 		],
 	};
 }
