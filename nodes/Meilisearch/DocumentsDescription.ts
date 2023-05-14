@@ -1,6 +1,4 @@
-import type {
-	INodeProperties
-} from 'n8n-workflow';
+import type { INodeProperties } from 'n8n-workflow';
 
 export const documentsOperations: INodeProperties[] = [
 	{
@@ -26,13 +24,44 @@ export const documentsOperations: INodeProperties[] = [
 						qs: {},
 						body: {},
 					},
-					send: {
-						preSend: [
-							async function (this, requestOptions) {
-								console.log(requestOptions)
-								return requestOptions
-							}
-						],
+				},
+			},
+			{
+				name: 'Add or Update Documents',
+				value: 'addOrUpdateDocuments',
+				action: 'Add or update documents',
+				routing: {
+					request: {
+						method: 'PUT',
+						url: '={{"/indexes/" + $parameter["uid"] + "/documents"}}',
+						qs: {},
+						body: {},
+					},
+				},
+			},
+			{
+				name: 'Delete All Document',
+				value: 'deleteAllDocuments',
+				action: 'Deletes all documents in an index',
+				routing: {
+					request: {
+						method: 'DELETE',
+						url: '={{"/indexes/" + $parameter["uid"] + "/documents"}}',
+						qs: {},
+						body: {},
+					},
+				},
+			},
+			{
+				name: 'Delete Batch of Documents',
+				value: 'deleteDocumentsBatch',
+				action: 'Delete batch of documents by UID',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '={{"/indexes/" + $parameter["uid"] + "/documents/delete-batch"}}',
+						qs: {},
+						body: {},
 					},
 				},
 			},
@@ -44,7 +73,7 @@ export const documentsOperations: INodeProperties[] = [
 					request: {
 						method: 'GET',
 						url: '={{"/indexes/" + $parameter["uid"] + "/documents"}}',
-						qs: {}
+						qs: {},
 					},
 				},
 			},
@@ -56,24 +85,12 @@ export const documentsOperations: INodeProperties[] = [
 					request: {
 						method: 'GET',
 						url: '={{"/indexes/" + $parameter["uid"] + "/documents/" + $parameter["documentId"]}}',
-						qs: {}
-					},
-				},
-			},
-			{
-				name: 'Delete One Document',
-				value: 'deleteDocument',
-				action: 'Delete one document by UID',
-				routing: {
-					request: {
-						method: 'DELETE',
-						url: '={{"/indexes/" + $parameter["uid"] + "/documents/" + $parameter["documentId"]}}',
-						qs: {}
+						qs: {},
 					},
 				},
 			},
 		],
-	}
+	},
 ];
 
 export const documentsFields: INodeProperties[] = [
@@ -105,9 +122,29 @@ export const documentsFields: INodeProperties[] = [
 		},
 	},
 	{
+		displayName: 'UIDs',
+		name: 'uids',
+		description: 'Delete a selection of documents based on an array of document IDs',
+		hint: '1234, 5678, 9012',
+		type: 'string',
+		default: '',
+		required: true,
+		displayOptions: {
+			show: {
+				resource: ['documents'],
+				operation: ['deleteDocumentsBatch'],
+			},
+		},
+		routing: {
+			request: {
+				body: ['={{$value.replaceAll(" ", "")}}'],
+			},
+		},
+	},
+	{
 		displayName: 'Documents JSON',
 		name: 'documentsJson',
-		description: 'JSON objects to add or replace. This passes a string.',
+		description: 'JSON objects to add, update, or replace. This must be valid JSON.',
 		hint: '{id: 1, fieldName: "fieldValue"}, {id: 2, fieldName: "fieldValue"}',
 		type: 'string',
 		default: '',
@@ -118,7 +155,7 @@ export const documentsFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['documents'],
-				operation: ['addOrReplaceDocuments'],
+				operation: ['addOrReplaceDocuments', 'addOrUpdateDocuments'],
 			},
 		},
 		routing: {
@@ -131,7 +168,8 @@ export const documentsFields: INodeProperties[] = [
 		displayName: 'Fields',
 		name: 'fields',
 		type: 'string',
-		description: 'Comma-separated list of fields to display for an API resource. By default it contains all fields of an API resource.',
+		description:
+			'Comma-separated list of fields to display for an API resource. By default it contains all fields of an API resource.',
 		default: '*',
 		displayOptions: {
 			show: {
@@ -147,7 +185,7 @@ export const documentsFields: INodeProperties[] = [
 			},
 		},
 	},
-]
+];
 export const documentsAdditionalFields: INodeProperties[] = [
 	{
 		displayName: 'Additional Fields',
@@ -202,7 +240,8 @@ export const documentsAdditionalFields: INodeProperties[] = [
 				displayName: 'Fields',
 				name: 'fields',
 				type: 'string',
-				description: 'Comma-separated list of fields to display for an API resource. By default it contains all fields of an API resource.',
+				description:
+					'Comma-separated list of fields to display for an API resource. By default it contains all fields of an API resource.',
 				default: '*',
 				routing: {
 					request: {

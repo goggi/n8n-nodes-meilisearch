@@ -45,6 +45,18 @@ export const indexesOperations: INodeProperties[] = [
 		default: 'listIndexes',
 		options: [
 			{
+				name: 'Get Stats of an Index',
+				value: 'indexStats',
+				action: 'Get stats of an index',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{"/indexes/" + $parameter["uid"] + "/stats"}}',
+						qs: {}
+					},
+				},
+			},
+			{
 				name: 'List Indexes',
 				value: 'listIndexes',
 				action: 'List indexes',
@@ -410,7 +422,7 @@ export const indexesFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['indexes', 'search'],
-				operation: ['createIndex', 'search'],
+				operation: ['createIndex', 'search', 'indexStats'],
 			},
 		},
 	},
