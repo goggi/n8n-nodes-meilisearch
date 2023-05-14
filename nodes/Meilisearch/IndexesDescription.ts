@@ -50,11 +50,54 @@ export const indexesOperations: INodeProperties[] = [
 					},
 				},
 			},
+			{
+				name: 'Create Index',
+				value: 'createIndex',
+				action: 'Create an index',
+				routing: {
+					request: {
+						method: 'POST',
+						url: 'indexes',
+						qs: {},
+						body: {
+							"uid": '={{$parameter["uid"]}}',
+							"primaryKey": '={{$parameter["primaryKey"]}}',
+						},
+					},
+				},
+			},
 		],
 	},
 ];
 
 export const indexesFields: INodeProperties[] = [
+	{
+		displayName: 'UID',
+		name: 'uid',
+		description: 'Name of the index',
+		type: 'string',
+		default: '',
+		required: true,
+		displayOptions: {
+			show: {
+				resource: ['indexes'],
+				operation: ['createIndex'],
+			},
+		},
+	},
+	{
+		displayName: 'Primary Key',
+		name: 'primaryKey',
+		description: 'Unique attribute of the index',
+		type: 'string',
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['indexes'],
+				operation: ['createIndex'],
+			},
+		},
+	},
 	{
 		displayName: 'Additional Fields',
 		noDataExpression: true,
