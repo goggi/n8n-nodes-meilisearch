@@ -1,9 +1,21 @@
 /* eslint-disable n8n-nodes-base/node-param-resource-with-plural-option */
 import type { INodeType, INodeTypeDescription } from 'n8n-workflow';
 import { generalOperations } from './GeneralDescription';
-import { tasksOperations, getAllTasksFields, deleteTasksFields, cancelTasksFields, getTaskFields } from './TasksDescription';
-import { indexesFields, indexesOperations, swapIndexesFields } from './IndexesDescription';
-import { createKeyFields, getKeyFields, getKeysFields, keysOperations, updateKeyFields } from './KeysDescription';
+import {
+	tasksOperations,
+	getAllTasksFields,
+	deleteTasksFields,
+	cancelTasksFields,
+	getTaskFields,
+} from './TasksDescription';
+import { indexesFields, indexesOperations, searchFields, searchOperations, swapIndexesFields } from './IndexesDescription';
+import {
+	createKeyFields,
+	getKeyFields,
+	getKeysFields,
+	keysOperations,
+	updateKeyFields,
+} from './KeysDescription';
 
 export class Meilisearch implements INodeType {
 	description: INodeTypeDescription = {
@@ -43,10 +55,6 @@ export class Meilisearch implements INodeType {
 						value: 'general',
 					},
 					{
-						name: 'Tasks',
-						value: 'tasks',
-					},
-					{
 						name: 'Indexes',
 						value: 'indexes',
 					},
@@ -54,27 +62,39 @@ export class Meilisearch implements INodeType {
 						name: 'Keys',
 						value: 'keys',
 					},
+					{
+						name: 'Search',
+						value: 'search',
+					},
+					{
+						name: 'Tasks',
+						value: 'tasks',
+					},
 				],
 				default: 'general',
 				//TODO
 				//multi-search
-				//keys
-				//indexes
+				//indexes settings and sub routes
 			},
 			...generalOperations,
+			// Tasks
 			...tasksOperations,
 			...getAllTasksFields,
 			...deleteTasksFields,
 			...cancelTasksFields,
 			...getTaskFields,
+			// Indexes and Search
 			...indexesOperations,
+			...searchOperations,
 			...swapIndexesFields,
 			...indexesFields,
+			...searchFields,
+			// Keys
 			...keysOperations,
 			...getKeysFields,
 			...getKeyFields,
 			...updateKeyFields,
-			...createKeyFields
+			...createKeyFields,
 		],
 	};
 }

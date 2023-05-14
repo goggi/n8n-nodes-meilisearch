@@ -2,6 +2,35 @@ import type {
 	INodeProperties
 } from 'n8n-workflow';
 
+export const searchOperations: INodeProperties[] = [
+	{
+		displayName: 'Operation',
+		name: 'operation',
+		type: 'options',
+		noDataExpression: true,
+		displayOptions: {
+			show: {
+				resource: ['search'],
+			},
+		},
+		default: 'search',
+		options: [
+			{
+				name: 'Search Index',
+				value: 'search',
+				action: 'Search index',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '={{"/indexes/" + $parameter["uid"] + "/search"}}',
+						qs: {}
+					},
+				},
+			},
+		],
+	}
+];
+
 export const indexesOperations: INodeProperties[] = [
 	{
 		displayName: 'Operation',
@@ -23,6 +52,18 @@ export const indexesOperations: INodeProperties[] = [
 					request: {
 						method: 'GET',
 						url: '/indexes',
+						qs: {}
+					},
+				},
+			},
+			{
+				name: 'Search Index',
+				value: 'search',
+				action: 'Search index',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '={{"/indexes/" + $parameter["uid"] + "/search"}}',
 						qs: {}
 					},
 				},
@@ -70,6 +111,293 @@ export const indexesOperations: INodeProperties[] = [
 	},
 ];
 
+export const searchFields: INodeProperties[] = [
+	{
+		displayName: 'Additional Fields',
+		noDataExpression: true,
+		name: 'additionalFields',
+		placeholder: 'Add Field',
+		description: 'Additional fields to add',
+		type: 'collection',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['indexes', 'search'],
+				operation: ['search'],
+			},
+		},
+		options: [
+			{
+				displayName: 'Search Query',
+				name: 'query',
+				description: 'Query String',
+				type: 'string',
+				default: '',
+				routing: {
+					request: {
+						body: {
+							q: '={{$value}}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Offset',
+				name: 'offset',
+				description: 'Number of results to skip',
+				type: 'number',
+				typeOptions: {
+					minValue: 1,
+				},
+				default: 1,
+				routing: {
+					request: {
+						body: {
+							offset: '={{$value}}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Limit',
+				name: 'limit',
+				description: 'Max number of results to return',
+				type: 'number',
+				typeOptions: {
+					minValue: 1,
+				},
+				default: 50,
+				routing: {
+					request: {
+						body: {
+							limit: '={{$value}}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Hits Per Page',
+				name: 'hitsPerPage',
+				description: 'Max number of results per page',
+				type: 'number',
+				typeOptions: {
+					minValue: 1,
+				},
+				default: 50,
+				routing: {
+					request: {
+						body: {
+							hitsPerPage: '={{$value}}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Page',
+				name: 'page',
+				description: 'Request a specific page of results',
+				type: 'number',
+				typeOptions: {
+					minValue: 1,
+				},
+				default: 1,
+				routing: {
+					request: {
+						body: {
+							page: '={{$value}}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Filter String',
+				name: 'filter',
+				type: 'string',
+				description: 'Filter query string',
+				hint: '(genres = horror OR genres = mystery) AND director = \'Jordan Peele\'',
+				default: '',
+				routing: {
+					request: {
+						body: {
+							filter: '={{$value}}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Facets String',
+				name: 'facets',
+				type: 'string',
+				description: 'Comma-separated list of facets to display the count of. To get all facets, use *.',
+				default: '',
+				routing: {
+					request: {
+						body: {
+							facets: '={{$value.replaceAll(" ", "").split(",")}}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Attributes To Retrieve',
+				name: 'attributesToRetrieve',
+				type: 'string',
+				description: 'Attributes to display in the returned documents, comma-separated',
+				default: '',
+				routing: {
+					request: {
+						body: {
+							attributesToRetrieve: '={{$value.replaceAll(" ", "").split(",")}}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Attributes To Crop',
+				name: 'attributesToCrop',
+				type: 'string',
+				description: 'Attributes whose values have to be cropped, comma-separated',
+				default: '',
+				routing: {
+					request: {
+						body: {
+							attributesToCrop: '={{$value.replaceAll(" ", "").split(",")}}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Crop Length',
+				name: 'cropLength',
+				description: 'Maximum length of cropped value in words',
+				type: 'number',
+				typeOptions: {
+					minValue: 1,
+				},
+				default: 10,
+				routing: {
+					request: {
+						body: {
+							cropLength: '={{$value}}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Crop Marker',
+				name: 'cropMarker',
+				type: 'string',
+				description: 'String marking crop boundaries',
+				default: '',
+				routing: {
+					request: {
+						body: {
+							cropMarker: '={{$value}}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Attributes To Highlight',
+				name: 'attributesToHighlight',
+				type: 'string',
+				description: 'Highlight matching terms contained in an attribute in this list, comma-separated',
+				default: '',
+				routing: {
+					request: {
+						body: {
+							attributesToHighlight: '={{$value.replaceAll(" ", "").split(",")}}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Highlight Pre Tag',
+				name: 'highlightPreTag',
+				type: 'string',
+				description: 'String inserted at the start of a highlighted term',
+				hint: 'Defaults to <em>',
+				default: '',
+				routing: {
+					request: {
+						body: {
+							highlightPreTag: '={{$value}}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Highlight Post Tag',
+				name: 'highlightPostTag',
+				type: 'string',
+				description: 'String inserted at the end of a highlighted term',
+				hint: 'Defaults to </em>',
+				default: '',
+				routing: {
+					request: {
+						body: {
+							highlightPostTag: '={{$value}}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Show Matches Position',
+				name: 'showMatchesPosition',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to return matching terms location',
+				routing: {
+					request: {
+						body: {
+							showMatchesPosition: '={{$value}}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Sort',
+				name: 'sort',
+				type: 'string',
+				description: 'Attributes to sort by and the direction to sort in, comma-separated',
+				hint: 'price:asc,release_date:desc',
+				default: '',
+				routing: {
+					request: {
+						body: {
+							attributesToHighlight: '={{$value.replaceAll(" ", "").split(",")}}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Matching Strategy',
+				name: 'matchingStrategy',
+				type: 'options',
+				description: 'Strategy used to match query terms within documents',
+				default: 'last',
+				options: [
+					{
+						name: 'Last',
+						value: 'last',
+					},
+					{
+						name: 'All',
+						value: 'all',
+					}
+				],
+				routing: {
+					request: {
+						body: {
+							matchingStrategy: '={{$value}}',
+						},
+					},
+				},
+			},
+		],
+	},
+];
+
 export const indexesFields: INodeProperties[] = [
 	{
 		displayName: 'UID',
@@ -80,8 +408,8 @@ export const indexesFields: INodeProperties[] = [
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['indexes'],
-				operation: ['createIndex'],
+				resource: ['indexes', 'search'],
+				operation: ['createIndex', 'search'],
 			},
 		},
 	},
@@ -114,23 +442,6 @@ export const indexesFields: INodeProperties[] = [
 		},
 		options: [
 			{
-				displayName: 'Limit',
-				name: 'limit',
-				description: 'Max number of results to return',
-				type: 'number',
-				typeOptions: {
-					minValue: 1,
-				},
-				default: 50,
-				routing: {
-					request: {
-						qs: {
-							limit: '={{$value}}',
-						},
-					},
-				},
-			},
-			{
 				displayName: 'Offset',
 				name: 'offset',
 				description: 'Number of indexes to skip',
@@ -143,6 +454,23 @@ export const indexesFields: INodeProperties[] = [
 					request: {
 						qs: {
 							offset: '={{$value}}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Limit',
+				name: 'limit',
+				description: 'Max number of results to return',
+				type: 'number',
+				typeOptions: {
+					minValue: 1,
+				},
+				default: 50,
+				routing: {
+					request: {
+						qs: {
+							limit: '={{$value}}',
 						},
 					},
 				},
