@@ -1,6 +1,4 @@
-import type {
-	INodeProperties,
-} from 'n8n-workflow';
+import type { INodeProperties } from 'n8n-workflow';
 
 export const keysOperations: INodeProperties[] = [
 	{
@@ -16,14 +14,44 @@ export const keysOperations: INodeProperties[] = [
 		default: 'getKeys',
 		options: [
 			{
-				name: 'Get API Keys',
-				value: 'getKeys',
-				action: 'Returns the 20 most recently created keys in a results array expired keys are included in the response but deleted keys are not',
+				name: 'Create An API Key',
+				value: 'createKey',
+				action: 'Create a new key',
 				routing: {
 					request: {
-						method: 'GET',
+						method: 'POST',
 						url: '/keys',
-						qs: {}
+						qs: {},
+						body: {},
+					},
+					send: {
+						preSend: [
+							async function (this, requestOptions) {
+								const indexes = this.getNodeParameter('indexes') as string
+								const indexesArr = indexes.replace(/\s/g, '').split(',')
+								const body = {
+									name: this.getNodeParameter('name'),
+									description: this.getNodeParameter('description'),
+									actions: this.getNodeParameter('actions'),
+									indexes: indexesArr,
+									expiresAt: this.getNodeParameter('expiresAt'),
+								}
+								requestOptions.body = JSON.stringify(body)
+								return requestOptions
+							}
+						]
+					}
+				},
+			},
+			{
+				name: 'Delete An API Key',
+				value: 'deleteKey',
+				action: 'Delete a key by its uid or key',
+				routing: {
+					request: {
+						method: 'DELETE',
+						url: '={{"/keys/" + $parameter["uid"]}}',
+						qs: {},
 					},
 				},
 			},
@@ -35,19 +63,20 @@ export const keysOperations: INodeProperties[] = [
 					request: {
 						method: 'GET',
 						url: '={{"/keys/" + $parameter["uid"]}}',
-						qs: {}
+						qs: {},
 					},
 				},
 			},
 			{
-				name: 'Delete An API Key',
-				value: 'deleteKey',
-				action: 'Delete a key by its uid or key',
+				name: 'Get API Keys',
+				value: 'getKeys',
+				action:
+					'Returns the 20 most recently created keys in a results array expired keys are included in the response but deleted keys are not',
 				routing: {
 					request: {
-						method: 'DELETE',
-						url: '={{"/keys/" + $parameter["uid"]}}',
-						qs: {}
+						method: 'GET',
+						url: '/keys',
+						qs: {},
 					},
 				},
 			},
@@ -63,10 +92,10 @@ export const keysOperations: INodeProperties[] = [
 						body: {
 							name: '={{$parameter["name"]}}',
 							description: '={{$parameter["description"]}}',
-						}
+						},
 					},
 				},
-			}
+			},
 		],
 	},
 ];
@@ -84,9 +113,9 @@ export const getKeyFields: INodeProperties[] = [
 			show: {
 				resource: ['keys'],
 				operation: ['getKey', 'deleteKey', 'updateKey'],
-			}
-		}
-	}
+			},
+		},
+	},
 ];
 
 export const updateKeyFields: INodeProperties[] = [
@@ -100,9 +129,9 @@ export const updateKeyFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['keys'],
-				operation: ['updateKey'],
-			}
-		}
+				operation: ['updateKey', 'createKey'],
+			},
+		},
 	},
 	{
 		displayName: 'Description',
@@ -114,11 +143,166 @@ export const updateKeyFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['keys'],
-				operation: ['updateKey'],
-			}
-		}
-	}
-]
+				operation: ['updateKey', 'createKey'],
+			},
+		},
+	},
+];
+
+export const createKeyFields: INodeProperties[] = [
+	{
+		displayName: 'Actions',
+		name: 'actions',
+		type: 'multiOptions',
+		required: true,
+		displayOptions: {
+			show: {
+				resource: ['keys'],
+				operation: ['createKey'],
+			},
+		},
+		default: [],
+		description:
+			'An array of API actions permitted for the key, represented as strings. API actions are only possible on authorized indexes. ["*"] for all actions.',
+		placeholder: 'Add action',
+		hint: 'If you want to add all actions, use * alone, or after SOME action types, eg documents.*',
+		options: [
+			{
+				// eslint-disable-next-line n8n-nodes-base/node-param-option-name-containing-star
+				name: 'All (*)',
+				value: '*',
+			},
+			{
+				// eslint-disable-next-line n8n-nodes-base/node-param-option-name-containing-star
+				name: 'documents.*',
+				value: 'documents.*',
+			},
+			{
+				name: 'documents.add',
+				value: 'documents.add',
+			},
+			{
+				name: 'documents.delete',
+				value: 'documents.delete',
+			},
+			{
+				name: 'documents.get',
+				value: 'documents.get',
+			},
+			{
+				name: 'dumps.create',
+				value: 'dumps.create',
+			},
+			{
+				name: 'indexes.*',
+				value: 'indexes.*',
+			},
+			{
+				name: 'indexes.create',
+				value: 'indexes.create',
+			},
+			{
+				name: 'indexes.delete',
+				value: 'indexes.delete',
+			},
+			{
+				name: 'indexes.get',
+				value: 'indexes.get',
+			},
+			{
+				name: 'indexes.swap',
+				value: 'indexes.swap',
+			},
+			{
+				name: 'indexes.update',
+				value: 'indexes.update',
+			},
+			{
+				name: 'keys.create',
+				value: 'keys.create',
+			},
+			{
+				name: 'keys.delete',
+				value: 'keys.delete',
+			},
+			{
+				name: 'keys.get',
+				value: 'keys.get',
+			},
+			{
+				name: 'keys.update',
+				value: 'keys.update',
+			},
+			{
+				name: 'Search',
+				value: 'search',
+			},
+			{
+				name: 'settings.*',
+				value: 'settings.*',
+			},
+			{
+				name: 'settings.get',
+				value: 'settings.get',
+			},
+			{
+				name: 'settings.update',
+				value: 'settings.update',
+			},
+			{
+				name: 'stats.getresponse',
+				value: 'stats.getresponse',
+			},
+			{
+				name: 'tasks.*',
+				value: 'tasks.*',
+			},
+			{
+				name: 'tasks.cancel',
+				value: 'tasks.cancel',
+			},
+			{
+				name: 'tasks.delete',
+				value: 'tasks.delete',
+			},
+			{
+				name: 'tasks.get',
+				value: 'tasks.get',
+			},
+			{
+				name: 'Version',
+				value: 'version',
+			},
+		],
+	},
+	{
+		displayName: 'Index UIDs',
+		required: true,
+		name: 'indexes',
+		description: 'Comma delimited list of Index UID(s) to give access to',
+		type: 'string',
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['keys'],
+				operation: ['createKey'],
+			},
+		},
+	},
+	{
+		displayName: 'Expires At',
+		name: 'expiresAt',
+		description: 'Date and time when the key will expire, represented in RFC 3339 format. null if the key never expires.',
+		type: 'dateTime',
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['keys'],
+				operation: ['createKey'],
+			},
+		},
+	},
+];
 
 export const getKeysFields: INodeProperties[] = [
 	{
