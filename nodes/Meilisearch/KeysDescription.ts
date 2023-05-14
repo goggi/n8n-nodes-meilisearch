@@ -50,6 +50,22 @@ export const keysOperations: INodeProperties[] = [
 						qs: {}
 					},
 				},
+			},
+			{
+				name: 'Update An API Key',
+				value: 'updateKey',
+				action: 'Update a key by its uid or key',
+				routing: {
+					request: {
+						method: 'PATCH',
+						url: '={{"/keys/" + $parameter["uid"]}}',
+						qs: {},
+						body: {
+							name: '={{$parameter["name"]}}',
+							description: '={{$parameter["description"]}}',
+						}
+					},
+				},
 			}
 		],
 	},
@@ -67,11 +83,42 @@ export const getKeyFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['keys'],
-				operation: ['getKey', 'deleteKey'],
+				operation: ['getKey', 'deleteKey', 'updateKey'],
 			}
 		}
 	}
 ];
+
+export const updateKeyFields: INodeProperties[] = [
+	{
+		displayName: 'Name',
+		name: 'name',
+		placeholder: 'My Key',
+		description: 'Name of the key',
+		type: 'string',
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['keys'],
+				operation: ['updateKey'],
+			}
+		}
+	},
+	{
+		displayName: 'Description',
+		name: 'description',
+		placeholder: 'My Key',
+		description: 'Description of the key',
+		type: 'string',
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['keys'],
+				operation: ['updateKey'],
+			}
+		}
+	}
+]
 
 export const getKeysFields: INodeProperties[] = [
 	{
