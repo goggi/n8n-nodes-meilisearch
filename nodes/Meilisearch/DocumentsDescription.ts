@@ -42,7 +42,7 @@ export const documentsOperations: INodeProperties[] = [
 			{
 				name: 'Delete All Document',
 				value: 'deleteAllDocuments',
-				action: 'Deletes all documents in an index',
+				action: 'Delete all documents in an index',
 				routing: {
 					request: {
 						method: 'DELETE',

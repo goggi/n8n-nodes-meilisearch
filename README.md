@@ -23,7 +23,41 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 ## Operations
 
--  
+-  Documents
+   -  Add or replace documents
+   -  Add or update documents
+   -  Delete batch of documents by UID
+   -  Delete all documents in an index
+   -  Get documents
+   -  Get one document by UID
+-  General
+   -  Create a dump
+   -  Get all index stats
+   -  Get health
+   -  Get version information
+-  Indexes
+   -  Create an index
+   -  Get stats of an index
+   -  List indexes
+   -  Search index
+   -  Swap indexes
+-  Keys
+   -  Create a new key
+   -  Delete a key by its uid or key
+   -  Get a single key by its uid or key
+   -  Get many api keys
+   -  Update a key by its uid or key
+-  Search
+   -  Search an index (Also found in indexes section)
+-  Settings
+   -  Get the settings of an index
+   -  Reset the settings of an index
+   -  Update the settings of an index
+-  Tasks
+   -  Cancel tasks
+   -  Delete tasks
+   -  Get all tasks
+   -  Get one task by UID
 
 ## Credentials
 
@@ -37,15 +71,22 @@ This is subject to change.
 
 ## Usage
 
-
+Use as you would any node- I tried to include useful descriptions and hints for all fields.
 
 ## Resources
 
 * [n8n community nodes documentation](https://docs.n8n.io/integrations/community-nodes/)
 * [n8n-nodes-meilisearch repository](https://github.com/Bwilliamson55/n8n-nodes-meilisearch)
+* [Official Meilisearch API Reference](https://www.meilisearch.com/docs/reference/api/overview)
+* [Official Meilisearch Docs](https://www.meilisearch.com/docs/learn/what_is_meilisearch/overview)
 
 ## Version history
 
 - 0.1.0 - Initial release
-  - Features:
-    
+  - Almost all API endpoints accounted for in node operations
+    - TODO: 
+      - multi-search, 
+      - index settings sub-routes, 
+      - auto-populating options where possible
+        - Due to the very dynamic permissions, getting options has a high chance of failure. For MVP I opted to skip loading options dynamically, such as index names. 
+    - Currently index settings can be interacted with, but as the entire settings object for each index
