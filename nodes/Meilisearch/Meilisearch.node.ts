@@ -44,6 +44,7 @@ export class Meilisearch implements INodeType {
 				Accept: 'application/json',
 				'Content-Type': 'application/json',
 			},
+			baseURL: '={{$credentials.host_url.replace(/\/$/, "")}}',
 		},
 		properties: [
 			{

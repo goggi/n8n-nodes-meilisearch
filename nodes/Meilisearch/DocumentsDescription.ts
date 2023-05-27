@@ -1,4 +1,54 @@
-import type { INodeProperties } from 'n8n-workflow';
+import {
+	NodeOperationError,
+	type IExecuteSingleFunctions,
+	type IHttpRequestOptions,
+	type INodeProperties,
+	PreSendAction
+} from 'n8n-workflow';
+
+export function validateJSON(json: string | undefined): any {
+	let result;
+	try {
+		result = JSON.parse(json!);
+	} catch (exception) {
+		result = undefined;
+	}
+	return result;
+}
+
+function parseAndSetBodyJsonArray(
+	parameterName: string,
+): PreSendAction {
+	return async function (
+		this: IExecuteSingleFunctions,
+		requestOptions: IHttpRequestOptions,
+	): Promise<IHttpRequestOptions> {
+		if (!requestOptions.body) requestOptions.body = [];
+		const raw = this.getNodeParameter(parameterName) as string;
+		const parsedJson = validateJSON(raw);
+
+		if (parsedJson === undefined) {
+			throw new NodeOperationError(
+				this.getNode(),
+				'Invalid JSON. Please check your JSON input',
+			);
+		}
+
+		let body = [];
+		if (Array.isArray(parsedJson)) {
+			body = parsedJson;
+		} else if (typeof parsedJson === 'object') {
+			body.push(parsedJson);
+		} else {
+			throw new NodeOperationError(
+				this.getNode(),
+				'Invalid JSON. Please check your JSON input',
+			);
+		}
+		requestOptions.body = body;
+		return requestOptions;
+	}
+}
 
 export const documentsOperations: INodeProperties[] = [
 	{
@@ -24,6 +74,9 @@ export const documentsOperations: INodeProperties[] = [
 						qs: {},
 						body: {},
 					},
+					send: {
+						preSend: [parseAndSetBodyJsonArray('documentsJson')],
+					}
 				},
 			},
 			{
@@ -37,6 +90,9 @@ export const documentsOperations: INodeProperties[] = [
 						qs: {},
 						body: {},
 					},
+					send: {
+						preSend: [parseAndSetBodyJsonArray('documentsJson')],
+					}
 				},
 			},
 			{
@@ -63,6 +119,9 @@ export const documentsOperations: INodeProperties[] = [
 						qs: {},
 						body: {},
 					},
+					send: {
+						preSend: [parseAndSetBodyJsonArray('uids')],
+					}
 				},
 			},
 			{
@@ -98,7 +157,7 @@ export const documentsFields: INodeProperties[] = [
 		displayName: 'Index UID',
 		name: 'uid',
 		description: 'Name of the index',
-		type: 'string',
+		type: 'options',
 		default: '',
 		required: true,
 		displayOptions: {
@@ -106,6 +165,41 @@ export const documentsFields: INodeProperties[] = [
 				resource: ['documents'],
 			},
 		},
+		typeOptions: {
+			loadOptions: {
+					routing: {
+							request: {
+									method: 'GET',
+									url: '={{"/indexes"}}',
+							},
+							output: {
+									postReceive: [
+											{
+												// When the returned data is nested under another property
+												// Specify that property key
+												type: 'rootProperty',
+												properties: {
+													property: 'results',
+												},
+											},
+											{
+												type: 'setKeyValue',
+												properties: {
+													name: '={{$responseItem.uid}} KeyField:{{$responseItem.primaryKey}}',
+													value: '={{$responseItem.uid}}',
+												},
+											},
+											{
+													type: 'sort',
+													properties: {
+															key: 'name',
+													},
+											},
+									],
+							},
+					},
+			},
+	},
 	},
 	{
 		displayName: 'Document ID',
@@ -125,7 +219,7 @@ export const documentsFields: INodeProperties[] = [
 		displayName: 'UIDs',
 		name: 'uids',
 		description: 'Delete a selection of documents based on an array of document IDs',
-		hint: '1234, 5678, 9012',
+		hint: 'JSON array of document IDs',
 		type: 'string',
 		default: '',
 		required: true,
@@ -135,17 +229,12 @@ export const documentsFields: INodeProperties[] = [
 				operation: ['deleteDocumentsBatch'],
 			},
 		},
-		routing: {
-			request: {
-				body: ['={{$value.replaceAll(" ", "")}}'],
-			},
-		},
 	},
 	{
 		displayName: 'Documents JSON',
 		name: 'documentsJson',
-		description: 'JSON objects to add, update, or replace. This must be valid JSON.',
-		hint: '{id: 1, fieldName: "fieldValue"}, {id: 2, fieldName: "fieldValue"}',
+		description: 'JSON object(s) to add, update, or replace. This must be valid JSON.',
+		hint: '{{ JSON.stringify($json) }} or {{ JSON.stringify($jmespath($input.all(), "[].json")) }}',
 		type: 'string',
 		default: '',
 		required: true,
@@ -156,11 +245,6 @@ export const documentsFields: INodeProperties[] = [
 			show: {
 				resource: ['documents'],
 				operation: ['addOrReplaceDocuments', 'addOrUpdateDocuments'],
-			},
-		},
-		routing: {
-			request: {
-				body: ['={{JSON.parse($value)}}'],
 			},
 		},
 	},
