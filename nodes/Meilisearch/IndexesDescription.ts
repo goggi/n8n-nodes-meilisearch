@@ -416,7 +416,7 @@ export const indexesFields: INodeProperties[] = [
 		displayName: 'UID',
 		name: 'uid',
 		description: 'Name of the index',
-		type: 'string',
+		type: 'options',
 		default: '',
 		required: true,
 		displayOptions: {
@@ -425,6 +425,41 @@ export const indexesFields: INodeProperties[] = [
 				operation: ['createIndex', 'search', 'indexStats'],
 			},
 		},
+		typeOptions: {
+			loadOptions: {
+					routing: {
+							request: {
+									method: 'GET',
+									url: '={{"/indexes"}}',
+							},
+							output: {
+									postReceive: [
+											{
+												// When the returned data is nested under another property
+												// Specify that property key
+												type: 'rootProperty',
+												properties: {
+													property: 'results',
+												},
+											},
+											{
+												type: 'setKeyValue',
+												properties: {
+													name: '={{$responseItem.uid}} KeyField:{{$responseItem.primaryKey}}',
+													value: '={{$responseItem.uid}}',
+												},
+											},
+											{
+													type: 'sort',
+													properties: {
+															key: 'name',
+													},
+											},
+									],
+							},
+					},
+			},
+	},
 	},
 	{
 		displayName: 'Primary Key',

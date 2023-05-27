@@ -73,6 +73,51 @@ This is subject to change.
 
 Use as you would any node- I tried to include useful descriptions and hints for all fields.
 
+## Updating
+
+If you depend soley on the community nodes part of the GUI, you can update there.
+
+If you use a dockerfile setup such as one of mine: [SimpleDockerfileExample](https://github.com/Bwilliamson55/n8n-custom-images/blob/master/bwill-nodes-simple/Dockerfile) , you can rebuild your container to get the updated node version.
+
+---
+
+### *If you're using `docker compose` or `docker-compose`, you can still use a dockerfile to persist custom nodes:*
+
+Put the `DockerFile` and `docker-entrypoint` in the same directory as your docker-compose file, and swap the `image` property for `build: .`
+
+ Then run `docker-compose down && docker-compose up --build -d`.
+
+ Or if you want to have less down time, run `docker-compose build` to create the image, THEN do `docker-compose down && docker-compose up --force-recreate -d` - [Source Docs](https://docs.docker.com/compose/compose-file/build/#dockerfile)
+
+ If you're on Digital Ocean or similar, "Force rebuild and redeploy".
+
+`Dockerfile`:
+    ***Note the `-g` - these nodes will not show in 'community nodes' but will work and show when searched for***
+```yaml
+FROM n8nio/n8n:latest
+RUN npm install -g n8n-nodes-meilisearch
+```
+`docker-entrypoint.sh`:  (Default one from n8n repo)
+```shell
+#!/bin/sh
+
+if [ -d /root/.n8n ] ; then
+  chmod o+rx /root
+  chown -R node /root/.n8n
+  ln -s /root/.n8n /home/node/
+fi
+
+chown -R node /home/node
+
+if [ "$#" -gt 0 ]; then
+  # Got started with arguments
+  exec su-exec node "$@"
+else
+  # Got started without arguments
+  exec su-exec node n8n
+fi
+```
+
 ## Resources
 
 * [n8n community nodes documentation](https://docs.n8n.io/integrations/community-nodes/)
@@ -87,6 +132,10 @@ Use as you would any node- I tried to include useful descriptions and hints for 
     - TODO: 
       - multi-search, 
       - index settings sub-routes, 
-      - auto-populating options where possible
+      - (Done in 0.1.1) auto-populating options where possible
         - Due to the very dynamic permissions, getting options has a high chance of failure. For MVP I opted to skip loading options dynamically, such as index names. 
     - Currently index settings can be interacted with, but as the entire settings object for each index
+- 0.1.1 - QOL Updates
+  - When adding or updating documents, the "Documents JSON" field is now far more forgiving. Very broken JSON will throw an error before sending as well.
+  - Some array type input fields are now also validated and transformed as JSON
+	- UID fields will be a dropdown when credentials have the proper permissions
