@@ -1,20 +1,20 @@
 {
-  "name": "n8n-nodes-meilisearch",
-  "version": "0.1.2",
-  "description": "A community node to interact with the Meilisearch REST API",
+  "name": "n8n-nodes-meilisearch-v2",
+  "version": "0.1.3",
+  "description": "A community node to interact with the Meilisearch REST API. Minor updates from original version",
   "keywords": [
     "n8n-community-node-package",
     "meilisearch"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/bwilliamson55",
+  "homepage": "https://github.com/goggi",
   "author": {
-    "name": "Ben Williamson",
-    "email": "bwilliamson@mail.weeumson.com"
+    "name": "Goggi",
+    "email": "gogsaan@gmai.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Bwilliamson55/n8n-nodes-meilisearch.git"
+    "url": "https://github.com/goggi/n8n-nodes-meilisearch.git"
   },
   "main": "index.js",
   "scripts": {
