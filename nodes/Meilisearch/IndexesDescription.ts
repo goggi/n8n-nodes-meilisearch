@@ -153,7 +153,7 @@ export const searchFields: INodeProperties[] = [
 						},
 					},
 				},
-			},
+			},			
 			{
 				displayName: 'Offset',
 				name: 'offset',
@@ -354,6 +354,20 @@ export const searchFields: INodeProperties[] = [
 					},
 				},
 			},
+			{
+				displayName: 'Show Ranking Score',
+				name: 'showRankingScore',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to return ranking score',
+				routing: {
+					request: {
+						body: {
+							showRankingScore: '={{$value}}',
+						},
+					},
+				},
+			},			
 			{
 				displayName: 'Show Matches Position',
 				name: 'showMatchesPosition',
